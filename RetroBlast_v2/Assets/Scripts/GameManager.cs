@@ -10,8 +10,7 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
 
-    public bool isGameActive = false;
-    public GameObject titleScreen;
+    public bool isGameActive = true;
     public GameObject pauseScreen;
     public GameObject gameOverScreen;
     public GameObject welldoneScreen;
@@ -19,16 +18,10 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI gameOverScore;
 
-
-
     private bool paused;
     public int score;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+  
 
     // Update is called once per frame
     void Update()
@@ -42,15 +35,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void StartGame()
-    {
-        isGameActive = true;
-        titleScreen.gameObject.SetActive(false);
-        score = 0;
-
-
-
-    }
 
     public void PauseGame()
     {
@@ -88,5 +72,6 @@ public class GameManager : MonoBehaviour
         welldoneScreen.gameObject.SetActive(true);
         wellDoneScore.text = "Your score: " + score;
     }
+
 
 }
