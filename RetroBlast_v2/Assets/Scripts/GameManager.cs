@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
+using System.IO;
 
 
 public class GameManager : MonoBehaviour
@@ -17,11 +18,19 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI wellDoneScore;
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI gameOverScore;
+    public TextMeshProUGUI lastGameScoreText;
+
 
     private bool paused;
     public int score;
+    public int lastGameScore;
 
-  
+    private void Start()
+    {
+        LoadHighScore();
+        lastGameScoreText.text = "Previous Game Score: " + lastGameScore;
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -64,6 +73,8 @@ public class GameManager : MonoBehaviour
         isGameActive = false;
         gameOverScreen.gameObject.SetActive(true);
         gameOverScore.text = "Your score: " + score;
+        lastGameScore = score;
+        SaveHighScore();
     }
 
     public void GameFinished()
@@ -71,7 +82,43 @@ public class GameManager : MonoBehaviour
         isGameActive = false;
         welldoneScreen.gameObject.SetActive(true);
         wellDoneScore.text = "Your score: " + score;
+        lastGameScore = score;
+        SaveHighScore();
     }
 
+
+
+    [System.Serializable]
+    class SaveData
+    {
+        public int lastGameScore;
+    }
+
+    public void SaveHighScore()
+    {
+        SaveData saveData = new SaveData
+        {
+            lastGameScore = lastGameScore
+        };
+
+        string json = JsonUtility.ToJson(saveData);
+        File.WriteAllText(Application.persistentDataPath + "/saveData.json", json);
+    }
+
+    public void LoadHighScore()
+    {
+        string filePath = Application.persistentDataPath + "/saveData.json";
+
+        if (File.Exists(filePath))
+        {
+            string json = File.ReadAllText(filePath);
+            SaveData saveData = JsonUtility.FromJson<SaveData>(json);
+            lastGameScore = saveData.lastGameScore;
+        }
+        else
+        {
+            lastGameScore = 0; // Default high score if the save data doesn't exist
+        }
+    }
 
 }
